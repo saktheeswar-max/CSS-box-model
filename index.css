@@ -15,15 +15,21 @@ h1 {
     margin-top: 30px;
     margin-bottom: 30px;
 }
+.box-wrapper {
+    background-color: #c0c0c0;
+    display: inline-block;
+    padding: 20px;
+    margin: 0;
+    transition: padding 0.2s;
+}
 .box-model-example {
     background: #ffd700;
     border: 5px solid #f7931e;
-    margin: 20px;
     padding: 30px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: margin 0.2s, border-width 0.2s, padding 0.2s;
+    transition: border-width 0.2s, padding 0.2s;
 }
 .box-content {
     background: #2291e6;
@@ -38,7 +44,7 @@ h1 {
     box-sizing: border-box;
 }
 .controls {
-    background: #f0f5f7;
+    background: #a3d4e8;
     max-width: 500px;
     margin: 0 auto 30px auto;
     border-radius: 10px;
@@ -59,6 +65,7 @@ h1 {
 .controls span {
     width: 40px;
     text-align: left;
+    color: #324759;
 }
 .box-legend {
     background: #f0f5f7;
@@ -93,7 +100,7 @@ h1 {
     border: 1px solid #ccc;
 }
 .legend-margin {
-    background: repeating-linear-gradient(135deg, transparent, transparent 3px, #757575 3px, #757575 4px);
+    background: #c0c0c0;
 }
 .legend-border {
     background: #f7931e;
@@ -104,3 +111,4 @@ h1 {
 .legend-content {
     background: #2291e6;
 }
+
