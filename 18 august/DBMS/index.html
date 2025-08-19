@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Employee List</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body style="font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif"></body>
+    <h1 style="color: rgb(16, 16, 16); font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;">Employee List</h1>
+
+    <form id="addEmployeeForm" style="background-color:lightblue; color:rgb(5, 5, 5) ;border-radius: 25px;" class="tab">
+        <div class="form-group">
+            <label for="name" >Name of the Employee:</label>
+            <input type="text" id="name" placeholder="Enter your name"  style="border-radius: 50px;"/>
+        </div>
+        <div class="form-group">
+            <label for="age">Age of the Employee:</label>
+            <input type="number" id="age"  placeholder="Enter your age " style="border-radius: 50px;" />
+        </div>
+        <div class="form-group">
+            <label for="position" >Position:</label>
+            <input type="text" id="position" placeholder="Enter your work position" style="border-radius: 50px;"/>
+        </div>
+        <button  class="but"type="submit" >Add in Database</button>
+    </form>
+    <div class="back tab">
+        <table id="employeeList">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Position</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+            </tbody>
+        </table>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
