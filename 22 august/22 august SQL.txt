@@ -1,0 +1,95 @@
+show databases;
+Create database place;
+use place;
+create table iq (
+iname VARCHAR(50),
+i_id int,
+i_address VARCHAR(100),
+ph_no int,
+email VARCHAR(50)
+
+);
+desc iq;
+create table cse (
+cse_name varchar(100),
+cse_id int ,
+cse_admin_no int,
+contact_no int,
+exam_no int
+
+);
+desc cse;
+insert into cse (cse_name,cse_id,cse_admin_no,contact_no,exam_no )
+values('iq',12,124,12345,
+4361);
+desc cse;
+select * from cse;
+insert into cse (cse_name,cse_id,cse_admin_no,contact_no,exam_no )
+values('iqs',11,123,112345,43161),('sakthi',45,379,11235,43612047),('gopi',46,2367,12344,436125);
+
+select * from cse;
+
+alter table cse add email varchar(50);
+select * from cse;
+alter table cse add sno int not null;
+SET SQL_SAFE_UPDATES = 0;
+update cse set contact_no=0 where cse_name='iq';
+alter table cse add scountry varchar(50) default 'India';
+alter table cse rename column scountry to slocation;
+update cse  set slocation='Srilanka' where cse_name='iq';
+update cse set sno=2 where cse_name='sakthi';
+update cse set cse_name='asin' where cse_name='iqs';
+
+start transaction;
+insert into cse values('steve',03,11,46,75,'sakthi',03,'India');
+savepoint A;
+insert into cse values('saktheeswar',11,03,46,143,'steve',03,'India');
+savepoint B;
+
+rollback to A;
+select * from cse;
+rollback to B;
+select * from cse;
+delete from cse where cse_name='saktheeswar';
+delete from cse where cse_name='steve';
+
+CREATE DATABASE ORG123;
+SHOW DATABASES;
+USE ORG123;
+
+CREATE TABLE Worker (
+	WORKER_ID INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	FIRST_NAME CHAR(25),
+	LAST_NAME CHAR(25),
+	SALARY INT(15),
+	JOINING_DATE DATETIME,
+	DEPARTMENT CHAR(25)
+);
+
+INSERT INTO Worker 
+	(WORKER_ID, FIRST_NAME, LAST_NAME, SALARY, JOINING_DATE, DEPARTMENT) VALUES
+		(001, 'Monika', 'Arora', 100000, '14-02-20 09.00.00', 'HR'),
+		(002, 'Niharika', 'Verma', 80000, '14-06-11 09.00.00', 'Admin'),
+		(003, 'Vishal', 'Singhal', 300000, '14-02-20 09.00.00', 'HR'),
+		(004, 'Amitabh', 'Singh', 500000, '14-02-20 09.00.00', 'Admin'),
+		(005, 'Vivek', 'Bhati', 500000, '14-06-11 09.00.00', 'Admin'),
+		(006, 'Vipul', 'Diwan', 200000, '14-06-11 09.00.00', 'Account'),
+		(007, 'Satish', 'Kumar', 75000, '14-01-20 09.00.00', 'Account'),
+		(008, 'Geetika', 'Chauhan', 90000, '14-04-11 09.00.00', 'Admin');
+select * from worker;
+delete from worker where worker_id=1;
+delete from worker where worker_id=3;
+truncate table worker;
+start transaction;
+delete from worker where worker_id=2;
+savepoint A;
+rollback to A;
+desc worker;
+CREATE TABLE students (
+  id INT PRIMARY KEY,
+  name VARCHAR(50) NOT NULL,
+  age INT CHECK (age >= 18),
+  email VARCHAR(100) UNIQUE,
+  country VARCHAR(50) DEFAULT 'India'
+);
+desc students;
