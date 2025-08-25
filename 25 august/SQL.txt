@@ -1,0 +1,69 @@
+create database flipcart;
+use flipcart;
+drop table category;
+
+-- category table
+create table category (
+category_id INT primary key UNIQUE NOT NUll,
+category_name varchar(100)
+
+);
+desc table category;
+select * from category;
+insert into category 
+values (100,'Furniture'),(104,'Electronics'),
+(124,'Home_appliances'),(145,'Electronics'),(173,'Furniture'),(402,'Home_appliances');
+
+-- product table
+create table products_table(
+product_id int primary key not null,
+product_name varchar(100),
+category_id int Not null,
+foreign key (category_id) references category(category_id) on delete cascade  on update cascade
+
+);
+
+-- price table 
+create table prices_table(
+pid int primary key not null, 
+price int ,
+foreign key (pid) references products_table(product_id)
+);
+
+insert into products_table values(1111,'study table',100),(1112,'iphone',104),(22521,'AC',124),
+(2342,'laptop',104),(4567,'Dinning table',173);
+
+insert into prices_table values (1111,50000),(22521,35000),(1112,99900),(2342,85999),(4567,45000);
+
+SELECT * 
+FROM (
+    SELECT * 
+    FROM category NATURAL JOIN products_table
+) AS T
+NATURAL JOIN prices_table where category_id=104;
+
+
+SELECT * 
+FROM (
+    SELECT * 
+    FROM category NATURAL JOIN products_table
+) AS T
+NATURAL JOIN prices_table  where product_name like "i%";
+
+SELECT * 
+FROM (
+    SELECT * 
+    FROM category NATURAL JOIN products_table
+) AS T
+NATURAL JOIN prices_table where product_name like "%t%";
+
+
+
+DELETE FROM products_table WHERE product_id = 1112;
+
+UPDATE category SET category_id = 999 WHERE category_id = 124;
+
+
+
+
+
