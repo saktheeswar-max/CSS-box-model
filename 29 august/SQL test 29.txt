@@ -1,0 +1,132 @@
+create database test;
+use test;
+
+
+
+CREATE TABLE Worker (
+	WORKER_ID INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	FIRST_NAME CHAR(25),
+	LAST_NAME CHAR(25),
+	SALARY INT,
+	JOINING_DATE DATETIME,
+	DEPARTMENT CHAR(25)
+);
+desc worker;
+INSERT INTO Worker 
+	(WORKER_ID, FIRST_NAME, LAST_NAME, SALARY, JOINING_DATE, DEPARTMENT) VALUES
+		(001, 'Monika', 'Arora', 100000, '14-02-20 09:00:00', 'HR'),
+		(002, 'Niharika', 'Verma', 80000, '14-06-11 09:00:00', 'Admin'),
+		(003, 'Vishal', 'Singhal', 300000, '14-02-20 09:00:00', 'HR'),
+		(004, 'Amitabh', 'Singh', 500000, '14-02-20 09:00:00', 'Admin'),
+		(005, 'Vivek', 'Bhati', 500000, '14-06-11 09:00:00', 'Admin'),
+		(006, 'Vipul', 'Diwan', 200000, '14-06-11 09:00:00', 'Account'),
+		(007, 'Satish', 'Kumar', 75000, '14-01-20 09:00:00', 'Account'),
+		(008, 'Geetika', 'Chauhan', 90000, '14-04-11 09:00:00', 'Admin');
+select * from worker;
+select * from bonus;
+select * from title;
+
+CREATE TABLE Bonus (
+	WORKER_REF_ID INT,
+	BONUS_AMOUNT INT,
+	BONUS_DATE DATETIME,
+	FOREIGN KEY (WORKER_REF_ID)
+		REFERENCES Worker(WORKER_ID)
+        ON DELETE CASCADE
+);
+
+INSERT INTO Bonus 
+	(WORKER_REF_ID, BONUS_AMOUNT, BONUS_DATE) VALUES
+		(001, 5000, '16-02-20'),
+		(002, 3000, '16-06-11'),
+		(003, 4000, '16-02-20'),
+		(001, 4500, '16-02-20'),
+		(002, 3500, '16-06-11');
+CREATE TABLE Title (
+	WORKER_REF_ID INT,
+	WORKER_TITLE CHAR(25),
+	AFFECTED_FROM DATETIME,
+	FOREIGN KEY (WORKER_REF_ID)
+		REFERENCES Worker(WORKER_ID)
+        ON DELETE CASCADE
+);
+
+INSERT INTO Title 
+	(WORKER_REF_ID, WORKER_TITLE, AFFECTED_FROM) VALUES
+ (001, 'Manager', '2016-02-20 00:00:00'),
+ (002, 'Executive', '2016-06-11 00:00:00'),
+ (008, 'Executive', '2016-06-11 00:00:00'),
+ (005, 'Manager', '2016-06-11 00:00:00'),
+ (004, 'Asst. Manager', '2016-06-11 00:00:00'),
+ (007, 'Executive', '2016-06-11 00:00:00'),
+ (006, 'Lead', '2016-06-11 00:00:00'),
+ (003, 'Lead', '2016-06-11 00:00:00');
+ #2
+ select upper(first_name) from worker; 
+ #1
+ select first_name as WORKER_NAME from worker;
+ #3
+ select distinct(department) from worker;
+ #4
+ select rtrim(first_name) from worker;
+ #5
+ select * from worker order by first_name ASC;
+ #6
+select * from worker order by first_name ASC,department DESC;
+#7
+select * from worker where first_name ='vipul' or first_name='satish';
+#8
+select * from worker where first_name like 'a%';
+#9
+select * from worker where first_name like '%a';
+#10
+select * from worker where first_name like '%h' and first_name like '______' ;
+select * from worker;
+#11
+select * from worker where salary between 100000 and 500000;
+#12 
+select count(*) from worker where  department like 'admin';
+#13
+select count(*) ,department from worker group by department order by count(*) DESC;
+
+#14
+select * from worker join title on worker.worker_id=title.worker_ref_id
+where worker_title='manager';
+
+#15
+
+#16
+select* from worker limit 4;
+
+#17
+select * from worker where salary= ( select salary from worker);
+
+
+#18
+select * from worker order by salary DESC limit 1 offset 2;
+
+#19 
+select * from worker 
+union all 
+select * from worker where worker_id=(select worker_id from worker limit 1);
+
+#20
+
+
+select * from title;
+#21
+select department from worker group by department having count(*)<5;
+
+#22
+select count(*) , department from worker group by department;
+
+#23
+select * from worker limit 1 offset 7;
+
+#24
+select  first_name from worker group by last_name having max(salary) limit 1;
+#25
+select * from worker group by department having max(salary);
+
+select * from worker join title on worker.worker_id=title.worker_ref_id
+  group by department having max(salary);
