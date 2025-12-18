@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Timetable - EduTrack</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            background: #f4f4f4;
+        }
+
+        .navbar {
+            background: #007bff;
+            padding: 15px;
+            color: white;
+            font-size: 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-btn {
+            background: white;
+            color: #007bff;
+            padding: 8px 15px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            margin-top: 20px;
+        }
+
+        table th, table td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        table th {
+            background: #007bff;
+            color: white;
+        }
+
+        .form-box {
+            background: white;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #ccc;
+        }
+
+        input, select {
+            padding: 10px;
+            width: 200px;
+            margin-right: 10px;
+        }
+
+        button {
+            padding: 10px 15px;
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background: #0056c1;
+        }
+
+        .delete-btn {
+            background: red;
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <span>Manage Timetable</span>
+    <button class="back-btn" onclick="goBack()">Back</button>
+</div>
+
+<div class="container">
+
+    <h2>Timetable Entries</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Course ID</th>
+                <th>Teacher ID</th>
+                <th>Student ID</th>
+                <th>Day</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="timetableTable"></tbody>
+    </table>
+
+    <div class="form-box">
+        <h3>Add Timetable Entry</h3>
+
+        <input type="number" id="courseId" placeholder="Course ID">
+        <input type="number" id="teacherId" placeholder="Teacher ID">
+        <input type="number" id="studentId" placeholder="Student ID">
+
+        <select id="day">
+            <option value="">Select Day</option>
+            <option>Monday</option>
+            <option>Tuesday</option>
+            <option>Wednesday</option>
+            <option>Thursday</option>
+            <option>Friday</option>
+            <option>Saturday</option>
+        </select>
+
+        <input type="time" id="startTime">
+        <input type="time" id="endTime">
+
+        <button onclick="addTimetable()">Add Entry</button>
+    </div>
+
+</div>
+
+<script>
+function checkAccess() {
+    const role = localStorage.getItem("role");
+
+    if (role !== "ADMIN") {
+        alert("Unauthorized access");
+        window.location.href = "../login.html";
+    }
+}
+
+function loadTimetable() {
+    fetch("http://localhost:8080/timetable")
+        .then(res => res.json())
+        .then(data => {
+            const table = document.getElementById("timetableTable");
+            table.innerHTML = "";
+
+            data.forEach(t => {
+                table.innerHTML += `
+                    <tr>
+                        <td>${t.id}</td>
+                        <td>${t.courseId}</td>
+                        <td>${t.teacherId}</td>
+                        <td>${t.studentId}</td>
+                        <td>${t.day}</td>
+                        <td>${t.startTime}</td>
+                        <td>${t.endTime}</td>
+                        <td>
+                            <button class="delete-btn" onclick="deleteTimetable(${t.id})">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        });
+}
+
+function addTimetable() {
+    const entry = {
+        courseId: document.getElementById("courseId").value,
+        teacherId: document.getElementById("teacherId").value,
+        studentId: document.getElementById("studentId").value,
+        day: document.getElementById("day").value,
+        startTime: document.getElementById("startTime").value,
+        endTime: document.getElementById("endTime").value
+    };
+
+    fetch("http://localhost:8080/timetable", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(entry)
+    })
+    .then(res => {
+        if (!res.ok) throw new Error("Failed to add timetable entry");
+        return res.json();
+    })
+    .then(() => {
+        alert("Timetable entry added successfully");
+        loadTimetable();
+    })
+    .catch(err => alert(err.message));
+}
+
+function deleteTimetable(id) {
+    if (!confirm("Are you sure you want to delete this entry?")) return;
+
+    fetch(`http://localhost:8080/timetable/${id}`, {
+        method: "DELETE"
+    })
+    .then(() => {
+        alert("Entry deleted");
+        loadTimetable();
+    });
+}
+
+function goBack() {
+    window.location.href = "admin-dashboard.html";
+}
+
+checkAccess();
+loadTimetable();
+</script>
+
+</body>
+</html>

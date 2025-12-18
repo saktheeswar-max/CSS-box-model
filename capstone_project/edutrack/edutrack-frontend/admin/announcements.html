@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Announcements - EduTrack</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            background: #f4f4f4;
+        }
+
+        .navbar {
+            background: #007bff;
+            padding: 15px;
+            color: white;
+            font-size: 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-btn {
+            background: white;
+            color: #007bff;
+            padding: 8px 15px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            margin-top: 20px;
+        }
+
+        table th, table td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        table th {
+            background: #007bff;
+            color: white;
+        }
+
+        .form-box {
+            background: white;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #ccc;
+        }
+
+        input, textarea {
+            padding: 10px;
+            width: 300px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        textarea {
+            height: 80px;
+            resize: none;
+        }
+
+        button {
+            padding: 10px 15px;
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background: #0056c1;
+        }
+
+        .delete-btn {
+            background: red;
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <span>Manage Announcements</span>
+    <button class="back-btn" onclick="goBack()">Back</button>
+</div>
+
+<div class="container">
+
+    <h2>Announcements</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Message</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="announcementTable"></tbody>
+    </table>
+
+    <div class="form-box">
+        <h3>Add Announcement</h3>
+
+        <input type="text" id="title" placeholder="Title"><br>
+        <textarea id="message" placeholder="Message"></textarea><br>
+        <input type="date" id="date">
+
+        <button onclick="addAnnouncement()">Add Announcement</button>
+    </div>
+
+</div>
+
+<script>
+function checkAccess() {
+    const role = localStorage.getItem("role");
+
+    if (role !== "ADMIN") {
+        alert("Unauthorized access");
+        window.location.href = "../login.html";
+    }
+}
+
+function loadAnnouncements() {
+    fetch("http://localhost:8080/announcements")
+        .then(res => res.json())
+        .then(data => {
+            const table = document.getElementById("announcementTable");
+            table.innerHTML = "";
+
+            data.forEach(a => {
+                table.innerHTML += `
+                    <tr>
+                        <td>${a.id}</td>
+                        <td>${a.title}</td>
+                        <td>${a.message}</td>
+                        <td>${a.date}</td>
+                        <td>
+                            <button class="delete-btn" onclick="deleteAnnouncement(${a.id})">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        });
+}
+
+function addAnnouncement() {
+    const announcement = {
+        title: document.getElementById("title").value,
+        message: document.getElementById("message").value,
+        date: document.getElementById("date").value
+    };
+
+    fetch("http://localhost:8080/announcements", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(announcement)
+    })
+    .then(res => {
+        if (!res.ok) throw new Error("Failed to add announcement");
+        return res.json();
+    })
+    .then(() => {
+        alert("Announcement added successfully");
+        loadAnnouncements();
+    })
+    .catch(err => alert(err.message));
+}
+
+function deleteAnnouncement(id) {
+    if (!confirm("Are you sure you want to delete this announcement?")) return;
+
+    fetch(`http://localhost:8080/announcements/${id}`, {
+        method: "DELETE"
+    })
+    .then(() => {
+        alert("Announcement deleted");
+        loadAnnouncements();
+    });
+}
+
+function goBack() {
+    window.location.href = "admin-dashboard.html";
+}
+
+checkAccess();
+loadAnnouncements();
+</script>
+
+</body>
+</html>

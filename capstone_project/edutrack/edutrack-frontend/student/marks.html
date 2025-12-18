@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Marks - EduTrack</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            background: #f4f4f4;
+        }
+
+        .navbar {
+            background: #007bff;
+            padding: 15px;
+            color: white;
+            font-size: 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-btn {
+            background: white;
+            color: #007bff;
+            padding: 8px 15px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            margin-top: 20px;
+        }
+
+        table th, table td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        table th {
+            background: #007bff;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <span>Student Marks</span>
+    <button class="back-btn" onclick="goBack()">Back</button>
+</div>
+
+<div class="container">
+
+    <h2>Your Marks</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Course ID</th>
+                <th>Marks</th>
+            </tr>
+        </thead>
+        <tbody id="marksTable"></tbody>
+    </table>
+
+</div>
+
+<script>
+function checkAccess() {
+    const role = localStorage.getItem("role");
+
+    if (role !== "STUDENT") {
+        alert("Unauthorized access");
+        window.location.href = "../login.html";
+    }
+}
+
+function loadMarks() {
+    const studentId = localStorage.getItem("userId");
+
+    fetch(`http://localhost:8080/marks/student/${studentId}`)
+        .then(res => res.json())
+        .then(data => {
+            const table = document.getElementById("marksTable");
+            table.innerHTML = "";
+
+            data.forEach(m => {
+                table.innerHTML += `
+                    <tr>
+                        <td>${m.id}</td>
+                        <td>${m.courseId}</td>
+                        <td>${m.marks}</td>
+                    </tr>
+                `;
+            });
+        })
+        .catch(err => console.error("Error loading marks:", err));
+}
+
+function goBack() {
+    window.location.href = "student-dashboard.html";
+}
+
+checkAccess();
+loadMarks();
+</script>
+
+</body>
+</html>
