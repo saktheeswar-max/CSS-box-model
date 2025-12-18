@@ -1,0 +1,72 @@
+CREATE DATABASE Accenture;
+
+SHOW DATABASES;
+
+USE Accenture;
+
+CREATE TABLE Employee (
+   emp_id INT NOT NULL UNIQUE AUTO_INCREMENT,   
+   emp_LastName VARCHAR(255) NOT NULL,          
+   emp_FirstName VARCHAR(255) NOT NULL,         
+   emp_age INT NOT NULL CHECK (emp_age >= 25),  
+   emp_salary INT NOT NULL                      
+);
+
+INSERT INTO Employee (emp_LastName, emp_FirstName, emp_age, emp_salary)
+VALUES 
+('s','Aditya',30,3000),
+('rovan','akash',25,27000),
+('A','Acelin',27,45000);
+
+SELECT * FROM Employee;
+
+DESC Employee;
+
+ALTER TABLE Employee
+DROP INDEX emp_id,
+ADD PRIMARY KEY (emp_id);
+
+ALTER TABLE Employee ADD emp_email INT;
+
+ALTER TABLE Employee MODIFY emp_email VARCHAR(30);
+
+DESC Employee;
+
+SELECT * FROM Employee;
+
+SELECT * FROM Employee WHERE emp_id = 1;
+
+CREATE DATABASE University;
+
+SHOW DATABASES;
+
+USE University;
+
+CREATE TABLE Department (
+      did INT PRIMARY KEY,
+      dname VARCHAR(50) NOT NULL
+);
+
+INSERT INTO Department VALUES (201,'Computer Science');
+INSERT INTO Department VALUES (202,'Mechanical');
+INSERT INTO Department VALUES (203,'Civil');
+
+SELECT * FROM Department;
+
+CREATE TABLE Student (
+       sid INT PRIMARY KEY,
+       sname VARCHAR(50) NOT NULL,
+       did INT NOT NULL,
+       FOREIGN KEY (did) REFERENCES Department(did)
+);
+
+INSERT INTO Student VALUES (301,'Rahul',202);
+INSERT INTO Student VALUES (302,'Priya',201);
+INSERT INTO Student VALUES (303,'Arjun',201);
+
+SELECT * FROM Student;
+
+DELETE FROM Department WHERE did=201;
+
+UPDATE Department SET did=203 WHERE did=201;
+

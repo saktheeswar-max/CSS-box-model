@@ -1,0 +1,103 @@
+create database kc;
+show databases;
+use kc;
+
+create table worker (
+    worker_id int primary key,
+    first_name varchar(50) not null,
+    last_name varchar(50) not null,
+    department varchar(50) not null,
+    salary decimal(10,2) not null
+);
+
+insert into worker values
+(1, 'ravi', 'kumar', 'it', 92000.00),
+(2, 'meera', 'singh', 'finance', 101000.00),
+(3, 'arjun', 'nair', 'hr', 87000.00),
+(4, 'divya', 'sharma', 'marketing', 99000.00),
+(5, 'karthik', 'rao', 'admin', 83000.00),
+(6, 'sneha', 'iyer', 'it', 115000.00),
+(7, 'vikas', 'menon', 'finance', 107000.00),
+(8, 'neha', 'patel', 'hr', 78000.00);
+
+
+
+create table award_winners(
+id int,
+name varchar(25),
+award_name varchar(30));
+
+insert into award_winners values(001,'Karthick','Volleyball winners'),(002,'Gopi','Basketball Runners'),(003,'Adib','Oscar winners'),
+(004,'Harij','English SpellBee 2nd Runner-up'),(005,'Loki','Volleyball winners'),(006,'Sakthi','Badminton Nationals runners'),
+(007,'Iqhlas','Debug winners'),(008,'AK','Basketball runners'),(009,'Kamal','Hackathon runners'),
+(010,'Barath','Hackathon winners');
+
+select * from award_winners;
+
+create table students(
+id int,
+name varchar(25));
+
+insert into students values(005,'Loki'),(1001,'Srihari'),(1003,'Dinesh'),(001,'Karthick'),(1005,'Tharun'),
+(1006,'Vamsi'),(1007,'Monish'),(1008,'Rohith'),(1009,'Alwyn'),(1010,'Akash');
+
+select * from students;
+
+select * from students 
+where id=(select id from award_winners where id=5);
+
+select * from students 
+where id=(select id from award_winners where name="karthick");
+
+select * from award_winners
+where id=(select id from students where id=1);
+
+select * from award_winners
+where id=(select id from students where name="Loki");
+
+
+select * from worker;
+
+select * from worker 
+where department = 'hr' 
+order by salary asc;
+
+select count(*) as employee_count from worker 
+where department not in ('hr', 'admin');
+
+select department, max(salary) as highest_salary from worker 
+group by department;
+
+select * from worker 
+order by worker_id 
+limit 2;
+
+select * from worker 
+order by worker_id 
+limit 2 offset 4;
+
+select * from (
+    select *, row_number() over (order by worker_id) as rn 
+    from worker
+) as temp 
+where rn > 5;
+
+select department 
+from worker 
+group by department 
+having avg(salary) > 100000;
+
+select department 
+from worker 
+group by department 
+having max(salary) = 500000;
+
+select department 
+from worker 
+group by department 
+having count(*) > 1 and sum(salary) > 100000;
+
+select department 
+from worker 
+group by department 
+having avg(salary) between 50000 and 200000;

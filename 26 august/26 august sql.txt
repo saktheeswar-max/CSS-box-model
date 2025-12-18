@@ -1,0 +1,122 @@
+ drop database org123;
+CREATE DATABASE ORG123;
+USE ORG123;
+
+CREATE TABLE Worker (
+  WORKER_ID INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  FIRST_NAME VARCHAR(25),
+  LAST_NAME VARCHAR(25),
+  SALARY INT,
+  JOINING_DATE DATETIME,
+  DEPARTMENT VARCHAR(25)
+);
+
+INSERT INTO Worker 
+  (FIRST_NAME, LAST_NAME, SALARY, JOINING_DATE, DEPARTMENT) VALUES
+  ('Monika', 'Arora', 100000, '2020-02-14 09:00:00', 'HR'),
+  ('Niharika', 'Verma', 80000, '2011-06-14 09:00:00', 'Admin'),
+  ('Vishal', 'Singhal', 300000, '2020-02-14 09:00:00', 'HR'),
+  ('Amitabh', 'Singh', 500000, '2020-02-14 09:00:00', 'Admin'),
+  ('Vivek', 'Bhati', 500000, '2011-06-14 09:00:00', 'Admin'),
+  ('Vipul', 'Diwan', 200000, '2011-06-14 09:00:00', 'Account'),
+  ('Satish', 'Kumar', 75000, '2020-01-14 09:00:00', 'Account'),
+  ('Geetika', 'Chauhan', 90000, '2011-04-14 09:00:00', 'Admin');
+
+select * from worker ;
+select * from worker where salary >=10000 and department like'HR';
+
+select * from  worker where last_name like '%l' or year(joining_date)=2020;
+select * from worker where (last_name like 'a_' and department like 'HR') or first_name not like '_i%';
+
+select * from worker where salary between 70000 and 100000 ;
+select * from worker where department in ('HR','Admin');
+select * from worker where salary = 75000;
+select * from Worker where  not DEPARTMENT = 'Account';
+
+select  FIRST_NAME, SALARY, SALARY * 0.10 as Bonus from  Worker;
+select * from worker where department <>'HR';
+
+select FIRST_NAME, SALARY,
+  case
+    when SALARY >= 400000 then 'High'
+    when SALARY >= 200000 then 'Medium'
+    else 'Low'
+  end as Salary_Level
+FROM Worker;
+
+
+select * from Worker
+where SALARY between 50000 and 100000;
+
+
+select * from Worker
+where JOINING_DATE not between '2020-01-01' and '2020-12-31';
+
+select min(salary) as min_salary, max(salary) as max_salary
+from worker;
+
+select min(joining_date) as first_joined, max(joining_date) as last_joined
+from worker;
+
+select count(*) as total_workers from worker;
+
+select first_name from worker
+union
+select last_name from worker;
+
+select department, avg(salary) as avg_salary
+from worker
+group by department;
+
+select avg(salary) as average_salary from worker;
+
+select sum(salary) as total_salary from worker;
+
+select first_name, salary,
+  case
+    when salary >= 400000 then 'Executive Bonus'
+    when salary >= 200000 then 'Standard Bonus'
+    when salary >= 100000 then 'Entry Bonus'
+    else 'No Bonus'
+  end as bonus_category
+from worker;
+
+select first_name, joining_date,
+  case
+    when year(joining_date) < 2015 then 'Veteran'
+    when year(joining_date) between 2015 and 2020 then 'Experienced'
+    else 'New Hire'
+  end as tenure_status
+from worker;
+
+
+select * 
+from worker
+where department not in ('hr', 'admin')
+  and salary between 70000 and 300000;
+
+select * 
+from worker
+where first_name like 'V%'
+  and salary >= 200000;
+
+select * 
+from worker
+where department != 'admin'
+  and salary < 100000;
+
+select avg(salary) as avg_admin_salary
+from worker
+where department = 'admin';
+
+select sum(salary) as total_hr_admin_salary
+from worker
+where department in ('hr', 'admin');
+
+select count(*) as v_name_count
+from worker
+where first_name like 'V%';
+
+select sum(salary) as mid_range_salary_total
+from worker
+where salary between 50000 and 200000;

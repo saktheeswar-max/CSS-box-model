@@ -1,0 +1,80 @@
+drop database flipcart;
+
+create database flipcart;
+use flipcart;
+
+create table category (
+    category_id int primary key unique not null,
+    category_name varchar(100)
+);
+
+create table products_table (
+    product_id int primary key not null,
+    product_name varchar(100),
+    category_id int not null,
+    foreign key (category_id) references category(category_id)
+    on delete cascade
+    on update cascade
+);
+
+create table prices_table (
+    pid int primary key not null,
+    price int,
+    foreign key (pid) references products_table(product_id)
+    on delete cascade
+    on update cascade
+);
+
+insert into category values
+(100, 'furniture'),
+(104, 'electronics'),
+(124, 'home_appliances');
+
+insert into products_table values
+(1111, 'study table', 100),
+(1112, 'iphone', 104),
+(22521, 'ac', 124),
+(2342, 'laptop', 104),
+(4567, 'dinning table', 100);
+
+insert into prices_table values
+(1111, 50000),
+(22521, 35000),
+(1112, 99900),
+(2342, 85999),
+(4567, 45000);
+
+update category set category_id = 999 where category_id = 124;
+
+delete from category where category_id = 104;
+
+SELECT * 
+FROM (
+    SELECT * 
+    FROM category NATURAL JOIN products_table
+) AS T
+NATURAL JOIN prices_table where product_name like "%t%";
+
+SELECT * 
+FROM (
+    SELECT * 
+    FROM category NATURAL JOIN products_table
+) AS T
+NATURAL JOIN prices_table where category_id=104;
+
+
+
+create view cheap_products as
+select pid, price
+from prices_table
+where price < 50000;
+
+select * from cheap_products;
+
+create view furniture_items as
+select product_id, product_name
+from products_table
+where category_id = 100;
+
+select * from furniture_items;
+select * from products_table where product_name like "%i%";
