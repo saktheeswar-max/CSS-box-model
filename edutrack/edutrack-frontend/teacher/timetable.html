@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teacher Timetable - EduTrack</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            background: #f4f4f4;
+        }
+
+        .navbar {
+            background: #28a745;
+            padding: 15px;
+            color: white;
+            font-size: 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-btn {
+            background: white;
+            color: #28a745;
+            padding: 8px 15px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            margin-top: 20px;
+        }
+
+        table th, table td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        table th {
+            background: #28a745;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <span>Teacher Timetable</span>
+    <button class="back-btn" onclick="goBack()">Back</button>
+</div>
+
+<div class="container">
+
+    <h2>Your Timetable</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Course ID</th>
+                <th>Student ID</th>
+                <th>Day</th>
+                <th>Start</th>
+                <th>End</th>
+            </tr>
+        </thead>
+        <tbody id="timetableTable"></tbody>
+    </table>
+
+</div>
+
+<script>
+function checkAccess() {
+    const role = localStorage.getItem("role");
+
+    if (role !== "TEACHER") {
+        alert("Unauthorized access");
+        window.location.href = "../login.html";
+    }
+}
+
+function loadTimetable() {
+    const teacherId = localStorage.getItem("userId");
+
+    fetch(`http://localhost:8080/timetable/teacher/${teacherId}`)
+        .then(res => res.json())
+        .then(data => {
+            const table = document.getElementById("timetableTable");
+            table.innerHTML = "";
+
+            data.forEach(t => {
+                table.innerHTML += `
+                    <tr>
+                        <td>${t.id}</td>
+                        <td>${t.courseId}</td>
+                        <td>${t.studentId}</td>
+                        <td>${t.day}</td>
+                        <td>${t.startTime}</td>
+                        <td>${t.endTime}</td>
+                    </tr>
+                `;
+            });
+        })
+        .catch(err => console.error("Error loading timetable:", err));
+}
+
+function goBack() {
+    window.location.href = "teacher-dashboard.html";
+}
+
+checkAccess();
+loadTimetable();
+</script>
+
+</body>
+</html>

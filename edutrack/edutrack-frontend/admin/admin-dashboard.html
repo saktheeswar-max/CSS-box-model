@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard - EduTrack</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            background: #f4f4f4;
+        }
+
+        .navbar {
+            background: #007bff;
+            padding: 15px;
+            color: white;
+            font-size: 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logout-btn {
+            background: red;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        .cards {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            width: 250px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #ccc;
+            text-align: center;
+        }
+
+        .card h3 {
+            margin: 0;
+            font-size: 18px;
+            color: #555;
+        }
+
+        .card p {
+            font-size: 30px;
+            margin: 10px 0 0;
+            color: #007bff;
+        }
+
+        .menu {
+            margin-top: 30px;
+        }
+
+        .menu a {
+            display: block;
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            text-decoration: none;
+            color: #333;
+            border-radius: 8px;
+            box-shadow: 0 0 5px #ccc;
+            font-size: 18px;
+        }
+
+        .menu a:hover {
+            background: #e8e8e8;
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <span>Admin Dashboard</span>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+</div>
+
+<div class="container">
+    <h2>Welcome, <span id="adminName"></span></h2>
+
+    <h3>Overview</h3>
+    <div class="cards">
+        <div class="card">
+            <h3>Total Students</h3>
+            <p id="totalStudents">0</p>
+        </div>
+
+        <div class="card">
+            <h3>Total Courses</h3>
+            <p id="totalCourses">0</p>
+        </div>
+
+        <div class="card">
+            <h3>Total Enrollments</h3>
+            <p id="totalEnrollments">0</p>
+        </div>
+
+        <div class="card">
+            <h3>Attendance Records</h3>
+            <p id="attendanceRecords">0</p>
+        </div>
+
+        <div class="card">
+            <h3>Announcements</h3>
+            <p id="announcementsCount">0</p>
+        </div>
+    </div>
+
+    <h3 style="margin-top: 40px;">Manage System</h3>
+    <div class="menu">
+        <a href="students.html">Manage Students</a>
+        <a href="courses.html">Manage Courses</a>
+        <a href="timetable.html">Manage Timetable</a>
+        <a href="attendance.html">Manage Attendance</a>
+        <a href="announcements.html">Manage Announcements</a>
+    </div>
+</div>
+
+<script>
+function checkAccess() {
+    const role = localStorage.getItem("role");
+
+    if (role !== "ADMIN") {
+        alert("Unauthorized access");
+        window.location.href = "../login.html";
+    }
+}
+
+function loadDashboard() {
+    document.getElementById("adminName").innerText = localStorage.getItem("username");
+
+    fetch("http://localhost:8080/dashboard/admin")
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById("totalStudents").innerText = data.totalStudents;
+            document.getElementById("totalCourses").innerText = data.totalCourses;
+            document.getElementById("totalEnrollments").innerText = data.totalEnrollments;
+            document.getElementById("attendanceRecords").innerText = data.attendanceRecords;
+            document.getElementById("announcementsCount").innerText = data.announcementsCount;
+        })
+        .catch(err => console.error("Error loading dashboard:", err));
+}
+
+function logout() {
+    localStorage.clear();
+    window.location.href = "../login.html";
+}
+
+checkAccess();
+loadDashboard();
+</script>
+
+</body>
+</html>

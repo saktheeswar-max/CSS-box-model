@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Attendance - EduTrack</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            background: #f4f4f4;
+        }
+
+        .navbar {
+            background: #007bff;
+            padding: 15px;
+            color: white;
+            font-size: 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-btn {
+            background: white;
+            color: #007bff;
+            padding: 8px 15px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            margin-top: 20px;
+        }
+
+        table th, table td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        table th {
+            background: #007bff;
+            color: white;
+        }
+
+        .form-box {
+            background: white;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #ccc;
+        }
+
+        input, select {
+            padding: 10px;
+            width: 200px;
+            margin-right: 10px;
+        }
+
+        button {
+            padding: 10px 15px;
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background: #0056c1;
+        }
+
+        .delete-btn {
+            background: red;
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <span>Manage Attendance</span>
+    <button class="back-btn" onclick="goBack()">Back</button>
+</div>
+
+<div class="container">
+
+    <h2>Attendance Records</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Student ID</th>
+                <th>Course ID</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="attendanceTable"></tbody>
+    </table>
+
+    <div class="form-box">
+        <h3>Add Attendance</h3>
+
+        <input type="number" id="studentId" placeholder="Student ID">
+        <input type="number" id="courseId" placeholder="Course ID">
+        <input type="date" id="date">
+        
+        <select id="status">
+            <option value="">Select Status</option>
+            <option>PRESENT</option>
+            <option>ABSENT</option>
+        </select>
+
+        <button onclick="addAttendance()">Add Attendance</button>
+    </div>
+
+</div>
+
+<script>
+function checkAccess() {
+    const role = localStorage.getItem("role");
+
+    if (role !== "ADMIN") {
+        alert("Unauthorized access");
+        window.location.href = "../login.html";
+    }
+}
+
+function loadAttendance() {
+    fetch("http://localhost:8080/attendance")
+        .then(res => res.json())
+        .then(data => {
+            const table = document.getElementById("attendanceTable");
+            table.innerHTML = "";
+
+            data.forEach(a => {
+                table.innerHTML += `
+                    <tr>
+                        <td>${a.id}</td>
+                        <td>${a.studentId}</td>
+                        <td>${a.courseId}</td>
+                        <td>${a.date}</td>
+                        <td>${a.status}</td>
+                        <td>
+                            <button class="delete-btn" onclick="deleteAttendance(${a.id})">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        });
+}
+
+function addAttendance() {
+    const attendance = {
+        studentId: document.getElementById("studentId").value,
+        courseId: document.getElementById("courseId").value,
+        date: document.getElementById("date").value,
+        status: document.getElementById("status").value
+    };
+
+    fetch("http://localhost:8080/attendance", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(attendance)
+    })
+    .then(res => {
+        if (!res.ok) throw new Error("Failed to add attendance");
+        return res.json();
+    })
+    .then(() => {
+        alert("Attendance added successfully");
+        loadAttendance();
+    })
+    .catch(err => alert(err.message));
+}
+
+function deleteAttendance(id) {
+    if (!confirm("Are you sure you want to delete this record?")) return;
+
+    fetch(`http://localhost:8080/attendance/${id}`, {
+        method: "DELETE"
+    })
+    .then(() => {
+        alert("Record deleted");
+        loadAttendance();
+    });
+}
+
+function goBack() {
+    window.location.href = "admin-dashboard.html";
+}
+
+checkAccess();
+loadAttendance();
+</script>
+
+</body>
+</html>
